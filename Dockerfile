@@ -26,7 +26,7 @@ COPY . /root/tf-openpose/
 WORKDIR /root/tf-openpose/
 
 RUN cd /root/tf-openpose/ && pip3 install -U setuptools && \
-pip3 install tensorflow && pip3 install -r requirements.txt
+pip3 install tensorflow-gpu && pip3 install -r requirements.txt
 
 RUN mkdir -p ./models/trained/mobilenet_368x368/ && cd ./models/trained/mobilenet_368x368/ && \
 wget https://www.dropbox.com/s/09xivpuboecge56/mobilenet_0.75_0.50_model-388003.zip && \
