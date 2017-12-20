@@ -22,7 +22,8 @@ config.gpu_options.allow_growth = True
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tensorflow Openpose Inference')
-    parser.add_argument('--imgpath', type=str, default='./images/p2.jpg')
+    parser.add_argument('--imgpath', type=str, default='/Desktop/me.jpg')
+    parser.add_argument('--imgout', type=str, default='/Desktop/me-out.jpg')
     parser.add_argument('--input-width', type=int, default=368)
     parser.add_argument('--input-height', type=int, default=368)
     parser.add_argument('--stage-level', type=int, default=6)
@@ -102,7 +103,7 @@ if __name__ == '__main__':
         convas[:, :640] = process_img
         convas[:, 640:] = image
 
-        cv2.imshow('result', convas)
+        cv2.imwrite(args.imgout, convas)
         cv2.waitKey(0)
 
         tf.train.write_graph(sess.graph_def, '.', 'graph-tmp.pb', as_text=True)

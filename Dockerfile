@@ -1,7 +1,5 @@
 FROM ubuntu:16.04
 
-ENV http_proxy=http://10.41.249.28:8080 https_proxy=http://10.41.249.28:8080
-
 RUN apt-get update -yq && apt-get install -yq build-essential cmake git pkg-config && \
 apt-get install -yq libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev && \
 apt-get install -yq libavcodec-dev libavformat-dev libswscale-dev libv4l-dev && \
@@ -21,12 +19,22 @@ rm -rf /tmp/*.tar.gz && \
 apt-get clean && rm -rf /tmp/* /var/tmp* /var/lib/apt/lists/* && \
 rm -f /etc/ssh/ssh_host_* && rm -rf /usr/share/man?? /usr/share/man/??_*
 
+RUN apt-get update -y
+RUN apt-get install -y wget
+RUN apt-get install -y unzip
 COPY . /root/tf-openpose/
 WORKDIR /root/tf-openpose/
 
 RUN cd /root/tf-openpose/ && pip3 install -U setuptools && \
 pip3 install tensorflow && pip3 install -r requirements.txt
 
-ENTRYPOINT ["python3", "pose_dataworker.py"]
+RUN mkdir -p ./models/trained/mobilenet_368x368/ && cd ./models/trained/mobilenet_368x368/ && \
+wget https://www.dropbox.com/s/09xivpuboecge56/mobilenet_0.75_0.50_model-388003.zip && \
+unzip mobilenet_0.75_0.50_model-388003.zip && \
+mv model-388003.data-00000-of-00001 model-release.data-00000-of-00001 && \
+mv model-388003.index model-release.index && \
+mv model-388003.meta model-release.meta
 
-ENV http_proxy= https_proxy=
+
+ENTRYPOINT ["python3", "inference.py"]
+
